@@ -1,7 +1,10 @@
 import tensorflow as tf 
 import numpy as np 
 from tensorflow.examples.tutorials.mnist import input_data
-import os 
+import matplotlib.pyplot as plt 
+import matplotlib.image as mpimg
+
+
 
 
 
@@ -24,11 +27,11 @@ n_out = 10
 
 (x_train, _), (x_test, _) = tf.keras.datasets.mnist.load_data()
 
-
+#process data normalizing
 def normalizer(x):
     return (x/255.)
 
-
+#make encoder and decoder
 def inference_encoder(x, n_hidden = None):
     def weight(shape):
         weight_var = tf.Variable(tf.truncated_normal(shape))
@@ -37,8 +40,6 @@ def inference_encoder(x, n_hidden = None):
     def bias(shape):
         bias_var = tf.Variable(tf.zeros(shape))
         return bias_var
-
-
     
     def hidden(x, n_hidden): 
         layer = None
@@ -62,19 +63,63 @@ def inference_encoder(x, n_hidden = None):
     return decoder
 
 
-
+#cost function
 def cost(x, decoder):
     cost = tf.reduce_mean(tf.pow(x-decoder, 2), -1)
     return cost
 
-
+#setOptimizer
 def train(cost, lr = 0.01):
     train = tf.train.AdamOptimizer(learning_rate=lr)
     train=train.minimize(cost)
     return train
 
+#learning 
+def fit(x, sess, training_epoch, batch_size, cost):
+    print("start training!\n")
+    for epoch in range(training_epoch):
+    
+        start = epoch*batch_size
+        end = start+batch_size+1
+
+        sess.run(optimizer, feed_dict = {t: x[start:end]})
+        print("epochs :",epoch)
+        eval(x, sess, cost)
+    print("end training!\n")
+    
+
+
+#evaluate learning state
+def eval(x, sess, cost):
+    print("test eval start\n")
+    co = sess.run(cost, feed_dict = { t : x})
+    print("cost : ", co)
 
     
+    
+
+
+
+#open Viewer for image.
+def viewer(orig, decode):
+    plt.figure()
+    for i in range(24):
+        plt.subplot(6,4, i+1)
+        plt.xticks([])
+        plt.yticks([])
+        plt.grid(False)
+        plt.imshow(orig[i], cmap=plt.cm.binary)
+        plt.imshow(decode[i], cmp=plt.cm.binary)
+    plt.show()
+    
+
+#rebuild from vecter to image.
+def rebuild_img(x):
+    return x.reshape(len(x), 28, 28)
+
+
+
+
 X = x_train.reshape(len(x_train), 784)
 
 normalizer(X)
@@ -84,36 +129,11 @@ decoder = inference_encoder(t, n_hiddens)
 cost_func = cost(t, decoder)
 optimizer = train(cost_func, lr = learning_rate)
 
-
-
 #Session initilizer!
 init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
 
-print("start training!\n")
-for epoch in range(training_epoch):
-    
-    start = epoch*batch_size
-    end = start+batch_size+1
-
-    op = sess.run(optimizer, feed_dict = {t: X[start:end]})
-
-    print("epochs :",epoch, "op : ", op)
-print("end training!\n")
-
-
-print("test eval start\n")
-
-
-print(x_test.shape)
+fit(X, sess, training_epoch, batch_size, cost_func)
 
 X= x_test.reshape(len(x_test), 784)
-
-
-
-
-
-
-
-
