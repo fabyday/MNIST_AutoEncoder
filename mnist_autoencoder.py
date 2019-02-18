@@ -13,15 +13,23 @@ I don't mind it.
 find "Session initializer!"
 viewer is custom viewer that made by matplotlib
 """
-
-
+def normalizer(data):
+  mean = np.mean(data)
+  std = np.std(data)
+  data = (data - mean) / std
+  return data
+"""
 def normalizer(x_data):
     return (x_data/255.)
+"""
+
+def unnormalizer(x_data):
+    return x_data*255.
     
 
 class Autoencoder():
 
-    def __init__(self, input_size, n_hidden, batch_size=100, epochs=2000, learning_rate = 0.01):
+    def __init__(self, input_size, n_hidden, batch_size=256, epochs=20, learning_rate = 0.01):
         self.input_size = input_size
         self.n_hidden = n_hidden
         self.batch_size = batch_size
@@ -30,37 +38,42 @@ class Autoencoder():
 
 
     def inference(self, x):
-        def weight_var(shape):
-            weight = tf.Variable(tf.truncated_normal(shape))
+        def weight_var(shape, name):
+            #weight = tf.Variable(tf.truncated_normal(shape, stddev = 0.01))
+            weight = tf.get_variable(name = 'W_'+name, shape=shape, initializer = tf.contrib.layers.xavier_initializer())
+
             return weight
 
-        def bias_var(shape):
-            bias = tf.Variable(tf.zeros(shape))
+        def bias_var(shape, name):
+            #bias = tf.Variable(tf.zeros(shape))
+            bias = tf.get_variable(name = 'b_'+name, shape=shape, initializer = tf.contrib.layers.xavier_initializer())
             return bias
 
-        def hidden(x, n_hidden):
+        def hidden(x, n_hidden, func_name):
             layer = None
             for number in range(0, len(n_hidden) - 1) :
-                print(n_hidden[number:number+2])
-                w = weight_var(n_hidden[number:number+2])
-                b = bias_var(n_hidden[number+1])
+                w = weight_var(n_hidden[number:number+2], str(number)+func_name)
+                b = bias_var(n_hidden[number+1], str(number)+func_name)
 
-                if number == 0 :
+                if number == 0:
                     layer = tf.nn.relu(tf.add(tf.matmul(x,w), b))
+                elif number == len(n_hidden)-2 and func_name == 'decoder':
+                    layer = tf.add(tf.matmul(layer, w), b)
                 else:
-                    layer = tf.nn.relu(tf.add(tf.matmul(layer,w), b))
+                    layer =tf.nn.relu(tf.add(tf.matmul(layer,w), b))                
             return layer
         self.x = x
-        encoder = hidden(self.x, self.n_hidden)
+        encoder = hidden(self.x, self.n_hidden, 'encoder')
         reversed_hidden = [x for x in self.n_hidden[::-1]]
-        self.decoder = hidden(encoder, reversed_hidden)
+        self.decoder = hidden(encoder, reversed_hidden, 'decoder')
 
         return self.decoder
 
 
     #cost function
     def cost_func(self, x_data, decoder):
-        self.cost = tf.reduce_mean(tf.pow(x_data-decoder, 2), -1)
+        #self.cost = tf.reduce_mean(tf.pow(x_data-decoder, 2))
+        self.cost = tf.reduce_mean(tf.reduce_sum(tf.square(x_data - decoder), axis = -1))
         return self.cost
 
     def training(self, cost, lr = 0.01):
@@ -72,20 +85,32 @@ class Autoencoder():
         print("==start training==\n")
         for epoch in range(self.epochs):
             np.random.shuffle(x_data)
-            print("epochs : ", epoch)
-            for batch in range(len(x_data)//self.batch_size+1):
+            for batch in range(len(x_data)//self.batch_size):
                 start = batch*self.batch_size
                 end = start+self.batch_size
                 _, loss = sess.run([self.train, self.cost], feed_dict = {self.x:x_data[start:end]})
-                print("batch : ", end,"/",len(x_data), end = '\r')
-                #print("eval cost : ", self.eval_cost(x_data, sess), end="\r")
-        print("end training")
+                print("epochs : ",epoch, "batch : ", end,"/",len(x_data)//self.batch_size, "loss : ", loss, end = '\r')
+            print("epochs : ",epoch, "batch : ", end,"/",len(x_data)//self.batch_size, "loss : ", loss)
+
+        print("===end training===")
 
     """
     def eval_cost(self, x_data, sess):
         co = sess.run(self.cost, feed_dict = { self.x : x_data })
         return co
     """
+
+    def test(self, test_data, sess):
+        print("test")
+        decode_data, loss = sess.run([self.decoder, self.cost], feed_dict={self.x:test_data})
+        print(loss)
+        #decode_data = unnormalizer(decode_data)
+        test_data = viewer.rebuild_image(test_data)
+        decode_data = viewer.rebuild_image(decode_data)
+        viewer.viewer(test_data[0:7], decode_data[0:7])
+
+        
+
 
 
 
