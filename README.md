@@ -28,15 +28,16 @@ if you want to save weights. insert code for saving data!
 
 # example
 
-<center><img src="./example_image/flat.png">
+<img src="./example_image/flat.png">
 using __flatted__ argument<br>
 low performance(can't recognize feature of clothes in detail. Only the outline of clothes has been learned.)
 
-
+<br>
+<br>
 <img src="./example_image/normal.png"><br>
 using __normal__ argument<br>
 better performance than using flatted arguments
-</center>
+
 
 
 # etc
