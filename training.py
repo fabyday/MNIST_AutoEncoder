@@ -33,7 +33,7 @@ if __name__ == '__main__':
     
     #typing 'normal or flatted' which you want. it make autoencoder automatically!
     if len(sys.argv) == 1 : 
-        print("[autoencoder] : argv 인자값 없음 \n")
+        print("[autoencoder] : can't find argument. please write right argument.\n")
         print("ex) training [flatted | normal]")
         sys.exit()
 
