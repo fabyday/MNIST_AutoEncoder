@@ -1,4 +1,4 @@
-# AutoEncoder
+# MNIST_AutoEncoder
 __Ver_ENG__
 
 this python script is autoencoder for mnist datasets and<br> 
