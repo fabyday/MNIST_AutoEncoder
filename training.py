@@ -33,7 +33,7 @@ if __name__ == '__main__':
     
     #typing 'normal or flatted' which you want. it make autoencoder automatically!
     if len(sys.argv) == 1 : 
-        print("[autoencoder] : can't find argument. please write right argument.\n")
+        print("[autoencoder] : argv 인자값 없음 \n")
         print("ex) training [flatted | normal]")
         sys.exit()
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     if flag == 'flatted':
         autoencoder = auto.Autoencoder(input_size**2, flatted_n_hiddens, batch_size, training_epoch)
-        t = tf.placeholder(tf.float32, [None, input_size])
+        t = tf.placeholder(tf.float32, [None, input_size**2])
     
         x_data = vr.convert_to_fullyconntected(x_train)
         x_test = vr.convert_to_fullyconntected(x_test)
