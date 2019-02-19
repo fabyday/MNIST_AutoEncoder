@@ -20,25 +20,25 @@ python training [flatted | normal]
 [normal] 원본 데이터(2차원 [28, 28])을 그대로 학습시킵니다.
 
 __주의사항!__ <br>
-학습가중치를 저장하는 tf.saver 코드를 사용하지 않았습니다. 
+학습가중치를 저장하는 tf.saver 코드를 사용하지 않았습니다. <br>
 사용하고 싶으시다면 직접 코드를 삽입해야 합니다.
 
 
 # 예시
 <img src="./example_image/flat.png">
 
-[flatted] 인자 사용시, 
+[flatted] 인자 사용시, <br>
 옷의 테두리부분만을 학습하며, 옷의 세부적인 특징들을 인식하지 못하는 낮은 성능을 보여준다.
 
 <br>
 <br>
 <img src="./example_image/normal.png"><br>
-[normal] 인자 사용시,
+[normal] 인자 사용시,<br>
 flatted 인자 사용보다 우수한 성능이 나온다.
 
 
 
 # etc
-autoencoder.py는 사용되지 않는 파일입니다. 다른 파일들을 사용해주세요.
+autoencoder.py는 사용되지 않는 파일입니다. 다른 파일들을 사용해주세요.<br>
 mnist_autoencoder.py는 autoencoder.py를 기본 베이스로 하여 만들어진 것입니다.
 
