@@ -36,12 +36,11 @@ class Autoencoder():
         self.epochs = epochs
         self.learning_rate = learning_rate
 
-
-    def inference(self, x):
+    def inference_flatted(self, x):
         def weight_var(shape, name):
             #weight = tf.Variable(tf.truncated_normal(shape, stddev = 0.01))
             weight = tf.get_variable(name = 'W_'+name, shape=shape, initializer = tf.contrib.layers.xavier_initializer())
-
+            #weight = tf.reshape(weight, [1]+shape)
             return weight
 
         def bias_var(shape, name):
@@ -69,6 +68,38 @@ class Autoencoder():
 
         return self.decoder
 
+
+    def inference_normal(self, x):
+        def weight_var(shape, name):
+            #weight = tf.Variable(tf.truncated_normal(shape, stddev = 0.01))
+            weight = tf.get_variable(name = 'W_'+name, shape=shape, initializer = tf.contrib.layers.xavier_initializer())
+            #weight = tf.reshape(weight, [1]+shape)
+            return weight
+
+        def bias_var(shape, name):
+            #bias = tf.Variable(tf.zeros(shape))
+            bias = tf.get_variable(name = 'b_'+name, shape=shape, initializer = tf.contrib.layers.xavier_initializer())
+            return bias
+
+        def hidden(x, n_hidden, func_name):
+            layer = None
+            for number in range(0, len(n_hidden) - 1) :
+                w = weight_var(n_hidden[number:number+2], str(number)+func_name)
+                b = bias_var(n_hidden[number+1], str(number)+func_name)
+
+                if number == 0:
+                    layer = tf.nn.relu(tf.add(tf.einsum("ijk,kh->ijh",x,w), b))
+                elif number == len(n_hidden)-2 and func_name == 'decoder':
+                    layer = tf.add(tf.einsum("ijk,kh->ijh",layer, w), b)
+                else:
+                    layer =tf.nn.relu(tf.add(tf.einsum("ijk,kh->ijh", layer,w), b))                
+            return layer
+        self.x = x
+        encoder = hidden(self.x, self.n_hidden, 'encoder')
+        reversed_hidden = [x for x in self.n_hidden[::-1]]
+        self.decoder = hidden(encoder, reversed_hidden, 'decoder')
+
+        return self.decoder
 
     #cost function
     def cost_func(self, x_data, decoder):
