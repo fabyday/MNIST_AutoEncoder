@@ -1,7 +1,7 @@
 # AutoEncoder
 __Ver_KR__
 
-MNIST 데이터를 사용한 autoencoder이며, CNN(Convolution Neural Network)을 사용하지 않은 간단한 오토인코더입니다.
+MNIST 데이터를 사용한 autoencoder이며, CNN(Convolution Neural Network)을 사용하지 않은 간단한 오토인코더입니다.<br>
 간단한 데이터(MNIST)에 대해 잘 작동되는 모습을 볼 수 있습니다.
 
 
@@ -25,8 +25,16 @@ __주의사항!__ <br>
 
 
 # 예시
+<img src="./example_image/flat.png">
 
+[flatted] 인자 사용시, 
+옷의 테두리부분만을 학습하며, 옷의 세부적인 특징들을 인식하지 못하는 낮은 성능을 보여준다.
 
+<br>
+<br>
+<img src="./example_image/normal.png"><br>
+[normal] 인자 사용시,
+flatted 인자 사용보다 우수한 성능이 나온다.
 
 
 
