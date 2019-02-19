@@ -26,3 +26,12 @@ if you want to save weights. insert code for saving data!
 
 
 # example
+
+
+
+
+
+# etc
+autoencoder.py is an unused file. please using the other files.
+actually mnist_autoencoder.py is made of autoencoder.py. (it is a file that has been structured)
+
