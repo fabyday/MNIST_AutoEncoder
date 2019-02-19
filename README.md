@@ -1,7 +1,7 @@
 # AutoEncoder
 __Ver_ENG__
 
-this python script is autoencoder for mnist datasets and 
+this python script is autoencoder for mnist datasets and<br> 
 simple autoencoder that didn't use CNN(Convolution Neural Network.)
 but it is pretty good worked.(only simple data.)
 
@@ -17,6 +17,7 @@ more information for this mnist datasets see this site.
 python training [flatted | normal]
 </code>
 </pre>
+__arguments__<br>
 [flatted] : flat original data(2D [28, 28]) to 1D data[28*28].<br>
 [normal] use origin data shape[28, 28]
 
@@ -27,8 +28,15 @@ if you want to save weights. insert code for saving data!
 
 # example
 
+<center><img src="./example_image/flat.png">
+using __flatted__ argument<br>
+low performance(can't recognize feature of clothes in detail. Only the outline of clothes has been learned.)
 
 
+<img src="./example_image/normal.png"><br>
+using __normal__ argument<br>
+better performance than using flatted arguments
+</center>
 
 
 # etc
