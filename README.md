@@ -3,7 +3,7 @@ __Ver_ENG__
 
 this python script is autoencoder for mnist datasets and 
 simple autoencoder that didn't use CNN(Convolution Neural Network.)
-but it is pretty good worked.
+but it is pretty good worked.(only simple data.)
 
 
 more information for this mnist datasets see this site. 
